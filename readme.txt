@@ -8,5 +8,4 @@ other projects in order to avoid code duplication.
 
 Contact:
 Stephen O'Hara
-svohara@gmail.com
-
+ohara@math.colostate.edu
