@@ -220,6 +220,8 @@ def reconstructPCA(T,W,components=None, means=None, stds=None):
     
     if not stds is None:
         Xhat = XnHat*stds+means
+    else:
+        Xhat = XnHat
         
     return Xhat
     
