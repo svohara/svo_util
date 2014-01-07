@@ -40,6 +40,25 @@ def parse_number(s, fail=None):
     
     return f
 
+def flatten(l, ltypes=(list, tuple)):
+    """
+    Flattens nested lists, algorithm courtesy of
+    Mike C. Fletcher's BasicTypes library.
+    """
+    ltype = type(l)
+    l = list(l)
+    i = 0
+    while i < len(l):
+        while isinstance(l[i], ltypes):
+            if not l[i]:
+                l.pop(i)
+                i -= 1
+                break
+            else:
+                l[i:i + 1] = l[i]
+        i += 1
+    return ltype(l)
+
 def _reporthook(a,b,c): 
     # ',' at the end of the line is important!
     print "% 3.1f%% of %d bytes\r" % (min(100, float(a * b) / c * 100), c),
