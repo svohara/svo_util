@@ -10,6 +10,41 @@ found in the data_mgmt module.
 '''
 import scipy as sp
 
+def getMinClassSize(L):
+    minsize = sp.inf
+    for label in sp.unique(L):
+        Lx = sp.flatnonzero(L==label)
+        if len(Lx) < minsize: minsize = len(Lx)
+    return minsize
+
+def balanceLabels(D,L):
+    """
+    modify the data set such that an equal number from
+    each class are retained.
+    @param D: The input data matrix, samples in rows
+    @param L: The label vector, length is the same as the
+    number of rows in D
+    @return: (D2,L2), where D2 is now balanced by having an
+    equal number of samples from each class and L2 are the
+    corresponding labels.
+    """
+    class_sizes = []
+    label_groups = []
+    L2_idxs = []
+    for label in sp.unique(L):
+        Lx = sp.flatnonzero(L==label)
+        N = len(Lx)
+        class_sizes.append(N)
+        label_groups.append(Lx)
+    min_size = min(class_sizes)
+    for ls in label_groups:
+        ls2 = sp.random.permutation(ls)  #shuffle
+        L2_idxs.append( ls2[:min_size] )
+    L2_idxs = sp.hstack(L2_idxs)
+    L2 = L[L2_idxs]
+    D2 = D[L2_idxs,:]
+    return (D2,L2)
+
 #======================================
 # Top-level cross-validation generators
 #======================================
@@ -186,6 +221,7 @@ def subject_partition_proportional_idxs(L,S, frac=None):
     return (train_idxs, test_idxs, test_ids)
 
 
+
 def random_partition_idxs(L, frac=0.25, proportional_labels=True):
     '''
     Generates indexes to partition data for train/test splits. This
@@ -202,6 +238,7 @@ def random_partition_idxs(L, frac=0.25, proportional_labels=True):
     @return: (train_idxs, test_idxs, p), where p is the random permutation or
     list of permutations (one per class) if proportional is True.
     '''
+        
     if not proportional_labels:
         N = len(L)
         p = sp.random.permutation(range(N))
